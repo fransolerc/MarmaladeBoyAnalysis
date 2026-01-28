@@ -1,19 +1,6 @@
 # Análisis de Relaciones de Personajes en "Marmalade Boy"
 
-Este repositorio contiene un análisis detallado de las relaciones entre los personajes de "Marmalade Boy" utilizando técnicas de procesamiento de texto y visualización de datos en Python. El análisis incluye la frecuencia de diálogos, la co-ocurrencia de personajes en escenas y una visualización de las relaciones entre personajes.
-
-## Tabla de Contenidos
-- [Características](#características)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Tecnologías](#tecnologías)
-
-## Contenido
-
-- `main.py`: Script principal que realiza el análisis.
-- `script.csv`: Archivo CSV con el guion de "Marmalade Boy" (diálogos de los personajes).
-- `README.md`: Este archivo de documentación.
+Este repositorio contiene un análisis detallado de las relaciones entre los personajes de "Marmalade Boy" utilizando técnicas de procesamiento de texto y visualización de datos en Python.
 
 ## Características
 - **Conteo de Diálogos por Personaje**: Analiza el número de diálogos por personaje.
@@ -23,85 +10,82 @@ Este repositorio contiene un análisis detallado de las relaciones entre los per
 ## Instalación
 
 ### Requisitos Previos
-Asegúrate de tener instalados los siguientes programas en tu sistema:
-- [Python 3.7+](https://www.python.org/downloads/)
-- [pip](https://pip.pypa.io/en/stable/installation/)
+- [Python 3.8+](https://www.python.org/downloads/) (Se recomienda marcar "Add Python to PATH" durante la instalación en Windows).
+- [Git](https://git-scm.com/downloads)
 
-### Pasos
-1. **Clona el repositorio**
-```bash
-git clone https://github.com/fransolerc/MarmaladeBoyAnalysis.git
-cd MarmaladeBoyAnalysis
-```
+### Pasos para la Instalación
 
-2. **Crea un entorno virtual (opcional, pero recomendado)**
-```bash
-python -m venv env
-source env/bin/activate   # En Windows: env\Scripts\activate
-```
+1.  **Clona el repositorio**
+    Abre una terminal (o `cmd` / `PowerShell` en Windows) y ejecuta:
+    ```bash
+    git clone https://github.com/fransolerc/MarmaladeBoyAnalysis.git
+    cd MarmaladeBoyAnalysis
+    ```
 
-1. **Instala las dependencias necesarias**
-```bash
-pip install -r requirements.txt
-```
+2.  **Crea y activa un entorno virtual**
+    Es una buena práctica aislar las dependencias del proyecto.
 
-1. **Descarga los corpus de NLTK** El proyecto requiere las stopwords y wordnet de NLTK. Ejecuta los siguientes comandos para descargarlos:
+    *   **En Windows:**
+        ```bash
+        python -m venv env
+        .\env\Scripts\activate
+        ```
+    *   **En macOS / Linux:**
+        ```bash
+        python3 -m venv env
+        source env/bin/activate
+        ```
+    Después de activarlo, deberías ver `(env)` al inicio de la línea de tu terminal.
 
-```bash
-import nltk
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
-```
+3.  **Instala las dependencias**
+    Con el entorno virtual activado, instala las librerías necesarias:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Descarga los datos de NLTK**
+    El proyecto necesita algunos paquetes de la librería NLTK. Ejecuta el siguiente comando para descargarlos de forma automática:
+    ```bash
+    python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('wordnet')"
+    ```
 
 ## Uso
-1. Coloca el guion de Marmalade Boy en el archivo data/script.csv. El formato debe incluir columnas como:
 
-- `index`: El número de línea en el guion.
-- `episode`: Número de episodio.
-- `scene`: Número de escena.
-- `character`: Nombre del personaje.
-- `dialogue`: El diálogo hablado por el personaje.
+1.  **Prepara el archivo de datos**
+    Asegúrate de que tu archivo con los diálogos se encuentre en `data/script.csv`. Debe tener las siguientes columnas, sin cabecera: `index`, `episode`, `scene`, `character`, `dialogue`.
 
-1. Ejecuta el script main.py para iniciar el análisis:
+2.  **Ejecuta el análisis**
+    Para correr el script principal, simplemente ejecuta:
+    ```bash
+    python main.py
+    ```
+    El programa procesará los datos y mostrará varias ventanas con los gráficos generados.
 
-```bash
-python main.py
+## Estructura del Proyecto
 ```
-1. El programa generará:
-
-- Gráficos de barras con el conteo de diálogos por personaje.
-- Distribución de líneas por escena y personaje.
-- Un gráfico de red de las interacciones entre personajes.
-
-### Estructura del Proyecto
-
-```bash
 marmalade-boy-analysis/
 │
 ├── data/
-│   └── script.csv                # Archivo del guion de entrada
-│
+│   └── script.csv
 ├── modules/
-│   ├── data_processing.py         # Funciones para cargar y procesar datos
-│   ├── text_processing.py         # Limpieza y análisis de texto con NLP
-│   └── visualizations.py          # Funciones para generar gráficos
+│   ├── data_processing.py
+│   ├── text_processing.py
+│   └── visualizations.py
 │
-├── main.py                        # Script principal para ejecutar el análisis
-├── requirements.txt               # Dependencias del proyecto
-└── README.md                      # Descripción del proyecto
+├── main.py
+├── requirements.txt
+└── README.md
 ```
 
-### Tecnologías
-- Python: Lenguaje de programación principal.
-- Pandas: Para la manipulación de datos.
-- Matplotlib y Seaborn: Para la visualización de datos.
-- NLTK: Para el procesamiento de lenguaje natural.
-- NetworkX: Para construir y visualizar los grafos de interacción de personajes.
-
+## Tecnologías
+- Python
+- Pandas
+- Matplotlib & Seaborn
+- NLTK
+- NetworkX
 
 ## Contribuciones
-Las contribuciones son bienvenidas. Por favor, abre un problema o una solicitud de extracción (pull request) para discutir cualquier mejora o corrección.
+Las contribuciones son bienvenidas. Por favor, abre un *issue* o un *pull request* para discutir cualquier cambio.
 
 ## Licencia
-Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
+Este proyecto está licenciado bajo la Licencia MIT.

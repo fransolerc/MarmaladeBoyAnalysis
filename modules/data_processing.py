@@ -1,4 +1,5 @@
 import pandas as pd
+from itertools import combinations
 
 
 class DataProcessor:
@@ -68,25 +69,16 @@ class DataProcessor:
     @staticmethod
     def calculate_character_interactions(df):
         char_dict = {}
-        for group, group_df in df.groupby(['episode', 'scene']):
-            char_in_scene = str(group_df['character'].sort_values().unique().tolist())[1:-1].replace("'", "")
-            if char_in_scene in char_dict:
-                char_dict[char_in_scene] += 1
-            else:
-                char_dict[char_in_scene] = 1
+        for _, scene_df in df.groupby(['episode', 'scene']):
+            characters_in_scene = sorted(scene_df['character'].unique())
 
-        sorted_dict = {k: v for k, v in sorted(char_dict.items(), key=lambda item: item[1], reverse=True)}
-        sorted_chars = sorted([
-            'Miki Koishikawa', 'Yuu Matsuura', 'Meiko Akizuki', 'Ginta Suou', 'Arimi Suzuki',
-            'Chiyako Koishikawa', 'Rumi Matsuura', 'Youji Matsuura', 'Jin Koishikawa',
-            'Satoshi Miwa', 'Namura', 'Ryoko Momoi', 'Takuji Kijima', 'Tsutomu Rokutanda'
-        ])
+            # Generate combinations of 2 and 3 characters
+            for i in range(2, 4):
+                for combo in combinations(characters_in_scene, i):
+                    key = ", ".join(combo)
+                    char_dict[key] = char_dict.get(key, 0) + 1
 
-        relations = [x + ', ' + y for x in sorted_chars for y in sorted_chars if x != y and x < y]
-        relations.extend(
-            [x + ', ' + y + ', ' + z for x in sorted_chars for y in sorted_chars for z in sorted_chars if x < y < z]
-        )
+        # Sort the dictionary by value in descending order
+        sorted_interactions = dict(sorted(char_dict.items(), key=lambda item: item[1], reverse=True))
 
-        final_dict = {k: v for k, v in sorted({x: sorted_dict[x] for x in relations if x in sorted_dict}.items(),
-                                              key=lambda item: item[1], reverse=True)}
-        return final_dict
+        return sorted_interactions
