@@ -1,67 +1,67 @@
-# Análisis de Relaciones de Personajes en "Marmalade Boy"
+# Character Relationship Analysis in "Marmalade Boy"
 
-Este repositorio contiene un análisis detallado de las relaciones entre los personajes de "Marmalade Boy" utilizando técnicas de procesamiento de texto y visualización de datos en Python.
+This repository contains a detailed analysis of the relationships between characters in "Marmalade Boy" using text processing and data visualization techniques in Python.
 
-## Características
-- **Conteo de Diálogos por Personaje**: Analiza el número de diálogos por personaje.
-- **Desglose de Escenas**: Analiza el número de escenas y líneas habladas por personaje.
-- **Gráfico de Interacciones entre Personajes**: Visualiza las interacciones entre personajes usando grafos de red.
+## Features
+- **Dialogue Count by Character**: Analyzes the number of dialogues per character.
+- **Scene Breakdown**: Analyzes the number of scenes and spoken lines per character.
+- **Character Interaction Graph**: Visualizes interactions between characters using network graphs.
 
-## Instalación
+## Installation
 
-### Requisitos Previos
-- [Python 3.8+](https://www.python.org/downloads/) (Se recomienda marcar "Add Python to PATH" durante la instalación en Windows).
+### Prerequisites
+- [Python 3.8+](https://www.python.org/downloads/) (It is recommended to check "Add Python to PATH" during installation on Windows).
 - [Git](https://git-scm.com/downloads)
 
-### Pasos para la Instalación
+### Installation Steps
 
-1.  **Clona el repositorio**
-    Abre una terminal (o `cmd` / `PowerShell` en Windows) y ejecuta:
+1.  **Clone the repository**
+    Open a terminal (or `cmd` / `PowerShell` on Windows) and run:
     ```bash
     git clone https://github.com/fransolerc/MarmaladeBoyAnalysis.git
     cd MarmaladeBoyAnalysis
     ```
 
-2.  **Crea y activa un entorno virtual**
-    Es una buena práctica aislar las dependencias del proyecto.
+2.  **Create and activate a virtual environment**
+    It is good practice to isolate project dependencies.
 
-    *   **En Windows:**
+    *   **On Windows:**
         ```bash
         python -m venv env
         .\env\Scripts\activate
         ```
-    *   **En macOS / Linux:**
+    *   **On macOS / Linux:**
         ```bash
         python3 -m venv env
         source env/bin/activate
         ```
-    Después de activarlo, deberías ver `(env)` al inicio de la línea de tu terminal.
+    After activating it, you should see `(env)` at the beginning of your terminal line.
 
-3.  **Instala las dependencias**
-    Con el entorno virtual activado, instala las librerías necesarias:
+3.  **Install dependencies**
+    With the virtual environment activated, install the necessary libraries:
     ```bash
     pip install -r requirements.txt
     ```
 
-4.  **Descarga los datos de NLTK**
-    El proyecto necesita algunos paquetes de la librería NLTK. Ejecuta el siguiente comando para descargarlos de forma automática:
+4.  **Download NLTK data**
+    The project needs some packages from the NLTK library. Run the following command to download them automatically:
     ```bash
     python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('wordnet')"
     ```
 
-## Uso
+## Usage
 
-1.  **Prepara el archivo de datos**
-    Asegúrate de que tu archivo con los diálogos se encuentre en `data/script.csv`. Debe tener las siguientes columnas, sin cabecera: `index`, `episode`, `scene`, `character`, `dialogue`.
+1.  **Prepare the data file**
+    Ensure your dialogue file is located at `data/script.csv`. It must have the following columns, without a header: `index`, `episode`, `scene`, `character`, `dialogue`.
 
-2.  **Ejecuta el análisis**
-    Para correr el script principal, simplemente ejecuta:
+2.  **Run the analysis**
+    To run the main script, simply execute:
     ```bash
     python main.py
     ```
-    El programa procesará los datos y mostrará varias ventanas con los gráficos generados.
+    The program will process the data and display several windows with the generated charts.
 
-## Estructura del Proyecto
+## Project Structure
 ```
 marmalade-boy-analysis/
 │
@@ -77,15 +77,15 @@ marmalade-boy-analysis/
 └── README.md
 ```
 
-## Tecnologías
+## Technologies
 - Python
 - Pandas
 - Matplotlib & Seaborn
 - NLTK
 - NetworkX
 
-## Contribuciones
-Las contribuciones son bienvenidas. Por favor, abre un *issue* o un *pull request* para discutir cualquier cambio.
+## Contributions
+Contributions are welcome. Please open an *issue* or a *pull request* to discuss any changes.
 
-## Licencia
-Este proyecto está licenciado bajo la Licencia MIT.
+## License
+This project is licensed under the MIT License.
