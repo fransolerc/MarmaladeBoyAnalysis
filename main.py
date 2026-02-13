@@ -55,6 +55,12 @@ def run_sentiment_evolution(df, text_processor):
     df_evolution = DataProcessor.calculate_sentiment_evolution(df)
 
     if not df_evolution.empty:
+        print("\n--- Sentiment Evolution Stats ---")
+        print(df_evolution.describe())
+        print("\nFirst 5 rows:")
+        print(df_evolution.head())
+        print("---------------------------------")
+
         print("Generating sentiment evolution plot...")
         Visualizer.plot_sentiment_evolution(df_evolution)
         print("Sentiment evolution plot generated.")
@@ -73,7 +79,10 @@ def display_menu():
     print("5. Plot Sentiment Evolution (Time Series)")
     print("6. Run All Analyses")
     print("0. Exit")
-    return input("Enter your choice [1-6, 0]: ")
+    try:
+        return input("Enter your choice [1-6, 0]: ")
+    except (EOFError, KeyboardInterrupt):
+        return '0'
 
 def main():
     try:

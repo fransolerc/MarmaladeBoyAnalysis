@@ -87,37 +87,37 @@ class DataProcessor:
     @staticmethod
     def calculate_sentiment_evolution(df):
         """
-        Calculates the average sentiment per episode.
+        Calculates the proportion of sentiment types per episode.
         Assumes 'sentiment' column exists with values 'POS', 'NEU', 'NEG'.
         """
         if 'sentiment' not in df.columns:
             print("Error: 'sentiment' column missing. Run text processing first.")
             return pd.DataFrame()
 
-        # Map sentiment labels to numerical values
-        sentiment_map = {'POS': 1, 'NEU': 0, 'NEG': -1}
+        # Group by episode and sentiment, then count
+        sentiment_counts = df.groupby(['episode', 'sentiment']).size().unstack(fill_value=0)
 
-        # Create a copy to avoid SettingWithCopyWarning on the original df
-        df_calc = df.copy()
-        df_calc['sentiment_score'] = df_calc['sentiment'].map(sentiment_map)
+        # Calculate proportions
+        sentiment_props = sentiment_counts.div(sentiment_counts.sum(axis=1), axis=0).reset_index()
 
-        # Group by episode and calculate mean
-        sentiment_evolution = df_calc.groupby('episode')['sentiment_score'].mean().reset_index()
+        # Ensure all columns exist
+        for col in ['POS', 'NEU', 'NEG']:
+            if col not in sentiment_props.columns:
+                sentiment_props[col] = 0.0
 
         # Sort by episode numerically
         try:
             # Extract numbers from the episode string if it contains text (e.g., "Episode 1")
-            # If it's already numeric or string of digits, this will handle it
-            sentiment_evolution['episode_num'] = sentiment_evolution['episode'].astype(str).str.extract(r'(\d+)').astype(float)
+            sentiment_props['episode_num'] = sentiment_props['episode'].astype(str).str.extract(r'(\d+)').astype(float)
 
             # Sort by the extracted number
-            sentiment_evolution = sentiment_evolution.sort_values('episode_num')
+            sentiment_props = sentiment_props.sort_values('episode_num')
 
             # Drop the helper column
-            sentiment_evolution = sentiment_evolution.drop('episode_num', axis=1)
+            sentiment_props = sentiment_props.drop('episode_num', axis=1)
 
         except Exception as e:
             print(f"Warning: Could not sort episodes numerically ({e}). Falling back to default sort.")
-            sentiment_evolution = sentiment_evolution.sort_values('episode')
+            sentiment_props = sentiment_props.sort_values('episode')
 
-        return sentiment_evolution
+        return sentiment_props
