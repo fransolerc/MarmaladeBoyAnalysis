@@ -38,7 +38,7 @@ class Visualizer:
     @staticmethod
     def plot_scenes_lines(df_scenes_lines, top_n=12):
         sns.set(style="whitegrid")
-        fig, axes = plt.subplots(1, 2, figsize=(18, 10))
+        _, axes = plt.subplots(1, 2, figsize=(18, 10))
 
         # Plot Scene Count
         scenes = df_scenes_lines['# of Scenes'].nlargest(top_n)
@@ -119,20 +119,33 @@ class Visualizer:
     @staticmethod
     def plot_sentiment_evolution(df_evolution):
         """
-        Plots the evolution of sentiment over episodes.
+        Plots the evolution of sentiment proportions over episodes using a stacked area chart.
 
         Args:
-            df_evolution (pd.DataFrame): DataFrame with 'episode' and 'sentiment_score'.
+            df_evolution (pd.DataFrame): DataFrame with 'episode' and columns 'POS', 'NEU', 'NEG'.
         """
         sns.set(style="whitegrid")
-        plt.figure(figsize=(14, 6))
+        plt.figure(figsize=(16, 8))
 
-        sns.lineplot(data=df_evolution, x='episode', y='sentiment_score', marker='o', color='purple')
+        # Ensure columns are in a logical order for stacking: NEG (bottom), NEU (middle), POS (top)
+        # or whatever makes sense visually. Let's try NEG, NEU, POS.
+        cols_to_plot = ['NEG', 'NEU', 'POS']
+        colors = [Visualizer.SENTIMENT_COLORS[col] for col in cols_to_plot]
 
-        plt.title('Sentiment Evolution Over Episodes', fontsize=16)
+        # Plot stacked area chart
+        plt.stackplot(df_evolution['episode'],
+                      df_evolution['NEG'],
+                      df_evolution['NEU'],
+                      df_evolution['POS'],
+                      labels=cols_to_plot,
+                      colors=colors,
+                      alpha=0.8)
+
+        plt.title('Evolution of Sentiment Proportions Over Episodes', fontsize=16)
         plt.xlabel('Episode', fontsize=12)
-        plt.ylabel('Average Sentiment Score (POS=1, NEU=0, NEG=-1)', fontsize=12)
-        plt.axhline(0, color='gray', linestyle='--', linewidth=1) # Zero line for neutrality
+        plt.ylabel('Proportion of Dialogues', fontsize=12)
+        plt.legend(loc='upper left', title='Sentiment')
+        plt.margins(0, 0) # Remove white space on edges
         plt.xticks(rotation=45)
         plt.tight_layout()
         plt.show()
