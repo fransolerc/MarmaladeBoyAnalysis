@@ -1,5 +1,6 @@
 import pandas as pd
 from itertools import combinations
+import re
 
 
 class DataProcessor:
@@ -82,3 +83,41 @@ class DataProcessor:
         sorted_interactions = dict(sorted(char_dict.items(), key=lambda item: item[1], reverse=True))
 
         return sorted_interactions
+
+    @staticmethod
+    def calculate_sentiment_evolution(df):
+        """
+        Calculates the proportion of sentiment types per episode.
+        Assumes 'sentiment' column exists with values 'POS', 'NEU', 'NEG'.
+        """
+        if 'sentiment' not in df.columns:
+            print("Error: 'sentiment' column missing. Run text processing first.")
+            return pd.DataFrame()
+
+        # Group by episode and sentiment, then count
+        sentiment_counts = df.groupby(['episode', 'sentiment']).size().unstack(fill_value=0)
+
+        # Calculate proportions
+        sentiment_props = sentiment_counts.div(sentiment_counts.sum(axis=1), axis=0).reset_index()
+
+        # Ensure all columns exist
+        for col in ['POS', 'NEU', 'NEG']:
+            if col not in sentiment_props.columns:
+                sentiment_props[col] = 0.0
+
+        # Sort by episode numerically
+        try:
+            # Extract numbers from the episode string if it contains text (e.g., "Episode 1")
+            sentiment_props['episode_num'] = sentiment_props['episode'].astype(str).str.extract(r'(\d+)').astype(float)
+
+            # Sort by the extracted number
+            sentiment_props = sentiment_props.sort_values('episode_num')
+
+            # Drop the helper column
+            sentiment_props = sentiment_props.drop('episode_num', axis=1)
+
+        except Exception as e:
+            print(f"Warning: Could not sort episodes numerically ({e}). Falling back to default sort.")
+            sentiment_props = sentiment_props.sort_values('episode')
+
+        return sentiment_props

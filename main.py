@@ -40,6 +40,32 @@ def run_sentiment_analysis(df, text_processor):
     print("Generating sentiment distribution plot...")
     Visualizer.plot_sentiment_distribution(processed_df)
     print("Sentiment distribution plot generated.")
+    return processed_df # Return processed df for further use
+
+def run_sentiment_evolution(df, text_processor):
+    """Calculates and plots sentiment evolution over episodes."""
+    print("\n--- Running Sentiment Evolution Analysis ---")
+
+    # Check if sentiment has been calculated, if not, do it
+    if 'sentiment' not in df.columns:
+        print("Sentiment data not found. Processing text first...")
+        df = text_processor.process_text(df.copy())
+
+    print("Calculating sentiment evolution...")
+    df_evolution = DataProcessor.calculate_sentiment_evolution(df)
+
+    if not df_evolution.empty:
+        print("\n--- Sentiment Evolution Stats ---")
+        print(df_evolution.describe())
+        print("\nFirst 5 rows:")
+        print(df_evolution.head())
+        print("---------------------------------")
+
+        print("Generating sentiment evolution plot...")
+        Visualizer.plot_sentiment_evolution(df_evolution)
+        print("Sentiment evolution plot generated.")
+    else:
+        print("Could not generate evolution data.")
 
 def display_menu():
     """Displays the main menu and gets user choice."""
@@ -50,9 +76,13 @@ def display_menu():
     print("2. Plot Scene and Line Counts")
     print("3. Generate Interactive Interaction Graph")
     print("4. Plot Sentiment Distribution")
-    print("5. Run All Analyses")
+    print("5. Plot Sentiment Evolution (Time Series)")
+    print("6. Run All Analyses")
     print("0. Exit")
-    return input("Enter your choice [1-5, 0]: ")
+    try:
+        return input("Enter your choice [1-6, 0]: ")
+    except (EOFError, KeyboardInterrupt):
+        return '0'
 
 def main():
     try:
@@ -66,6 +96,9 @@ def main():
         # Initialize the text processor once
         text_processor = TextProcessor()
 
+        # Keep a version of df with sentiment if calculated to avoid re-processing
+        df_with_sentiment = None
+
         while True:
             choice = display_menu()
 
@@ -76,19 +109,35 @@ def main():
             elif choice == '3':
                 run_interaction_graph(df)
             elif choice == '4':
-                run_sentiment_analysis(df, text_processor)
+                # Update df_with_sentiment if not already done
+                if df_with_sentiment is None:
+                    df_with_sentiment = run_sentiment_analysis(df, text_processor)
+                else:
+                    Visualizer.plot_sentiment_distribution(df_with_sentiment)
             elif choice == '5':
+                if df_with_sentiment is None:
+                     # We need to process it first and store it
+                     print("Processing text for sentiment first...")
+                     df_with_sentiment = text_processor.process_text(df.copy())
+                run_sentiment_evolution(df_with_sentiment, text_processor)
+            elif choice == '6':
                 print("\n--- Running All Analyses ---")
                 run_dialogue_count(df)
                 run_scene_line_count(df)
                 run_interaction_graph(df)
-                run_sentiment_analysis(df, text_processor)
+
+                if df_with_sentiment is None:
+                    df_with_sentiment = run_sentiment_analysis(df, text_processor)
+                else:
+                    Visualizer.plot_sentiment_distribution(df_with_sentiment)
+
+                run_sentiment_evolution(df_with_sentiment, text_processor)
                 print("\nAll analyses complete.")
             elif choice == '0':
                 print("Exiting program.")
                 break
             else:
-                print("Invalid choice. Please enter a number between 0 and 5.")
+                print("Invalid choice. Please enter a number between 0 and 6.")
 
     except Exception as e:
         print(f"\nA critical error occurred: {e}")
