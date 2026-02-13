@@ -1,6 +1,6 @@
 # Character Relationship Analysis in "Marmalade Boy"
 
-This repository contains a detailed analysis of the relationships between characters in "Marmalade Boy" using text processing and data visualization techniques in Python.
+This repository contains a detailed analysis of the relationships between characters in the anime series "Marmalade Boy". This project uses this anime as a case study to demonstrate how to analyze character conversations and interactions using text processing and data visualization techniques in Python.
 
 ## Features
 - **Dialogue Count by Character**: Analyzes the number of dialogues per character.
