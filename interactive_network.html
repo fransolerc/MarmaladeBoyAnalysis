@@ -1,0 +1,164 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "Miki Koishikawa", "label": "Miki Koishikawa", "shape": "dot", "title": "Miki Koishikawa: 934 dialogues", "value": 934}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Yuu Matsuura", "label": "Yuu Matsuura", "shape": "dot", "title": "Yuu Matsuura: 497 dialogues", "value": 497}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ginta Suou", "label": "Ginta Suou", "shape": "dot", "title": "Ginta Suou: 257 dialogues", "value": 257}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Arimi Suzuki", "label": "Arimi Suzuki", "shape": "dot", "title": "Arimi Suzuki: 174 dialogues", "value": 174}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Meiko Akizuki", "label": "Meiko Akizuki", "shape": "dot", "title": "Meiko Akizuki: 147 dialogues", "value": 147}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Tsutomu Rokutanda", "label": "Tsutomu Rokutanda", "shape": "dot", "title": "Tsutomu Rokutanda: 121 dialogues", "value": 121}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Jin Koishikawa", "label": "Jin Koishikawa", "shape": "dot", "title": "Jin Koishikawa: 59 dialogues", "value": 59}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Takuji Kijima", "label": "Takuji Kijima", "shape": "dot", "title": "Takuji Kijima: 56 dialogues", "value": 56}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Chiyako Koishikawa", "label": "Chiyako Koishikawa", "shape": "dot", "title": "Chiyako Koishikawa: 53 dialogues", "value": 53}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Rumi Matsuura", "label": "Rumi Matsuura", "shape": "dot", "title": "Rumi Matsuura: 50 dialogues", "value": 50}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Namura", "label": "Namura", "shape": "dot", "title": "Namura: 34 dialogues", "value": 34}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Satoshi Miwa", "label": "Satoshi Miwa", "shape": "dot", "title": "Satoshi Miwa: 27 dialogues", "value": 27}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Miki\u0027s friend", "label": "Miki\u0027s friend", "shape": "dot", "title": "Miki\u0027s friend: 23 dialogues", "value": 23}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Youji Matsuura", "label": "Youji Matsuura", "shape": "dot", "title": "Youji Matsuura: 22 dialogues", "value": 22}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ryoko Momoi", "label": "Ryoko Momoi", "shape": "dot", "title": "Ryoko Momoi: 15 dialogues", "value": 15}]);
+                  edges = new vis.DataSet([{"from": "Miki Koishikawa", "title": "Interactions: 90", "to": "Yuu Matsuura", "value": 90}, {"from": "Ginta Suou", "title": "Interactions: 34", "to": "Miki Koishikawa", "value": 34}, {"from": "Meiko Akizuki", "title": "Interactions: 29", "to": "Miki Koishikawa", "value": 29}, {"from": "Arimi Suzuki", "title": "Interactions: 27", "to": "Miki Koishikawa", "value": 27}, {"from": "Ginta Suou", "title": "Interactions: 26", "to": "Yuu Matsuura", "value": 26}, {"from": "Arimi Suzuki", "title": "Interactions: 23", "to": "Ginta Suou", "value": 23}, {"from": "Jin Koishikawa", "title": "Interactions: 18", "to": "Rumi Matsuura", "value": 18}, {"from": "Chiyako Koishikawa", "title": "Interactions: 17", "to": "Rumi Matsuura", "value": 17}, {"from": "Arimi Suzuki", "title": "Interactions: 17", "to": "Yuu Matsuura", "value": 17}, {"from": "Miki Koishikawa", "title": "Interactions: 16", "to": "Rumi Matsuura", "value": 16}, {"from": "Ginta Suou", "title": "Interactions: 16", "to": "Tsutomu Rokutanda", "value": 16}, {"from": "Chiyako Koishikawa", "title": "Interactions: 15", "to": "Jin Koishikawa", "value": 15}, {"from": "Chiyako Koishikawa", "title": "Interactions: 15", "to": "Miki Koishikawa", "value": 15}, {"from": "Chiyako Koishikawa", "title": "Interactions: 14", "to": "Youji Matsuura", "value": 14}, {"from": "Jin Koishikawa", "title": "Interactions: 14", "to": "Miki Koishikawa", "value": 14}, {"from": "Jin Koishikawa", "title": "Interactions: 14", "to": "Youji Matsuura", "value": 14}, {"from": "Rumi Matsuura", "title": "Interactions: 14", "to": "Youji Matsuura", "value": 14}, {"from": "Miki Koishikawa", "title": "Interactions: 11", "to": "Youji Matsuura", "value": 11}, {"from": "Meiko Akizuki", "title": "Interactions: 11", "to": "Yuu Matsuura", "value": 11}, {"from": "Tsutomu Rokutanda", "title": "Interactions: 11", "to": "Yuu Matsuura", "value": 11}, {"from": "Chiyako Koishikawa", "title": "Interactions: 9", "to": "Yuu Matsuura", "value": 9}, {"from": "Ginta Suou", "title": "Interactions: 9", "to": "Meiko Akizuki", "value": 9}, {"from": "Miki Koishikawa", "title": "Interactions: 9", "to": "Takuji Kijima", "value": 9}, {"from": "Miki Koishikawa", "title": "Interactions: 9", "to": "Tsutomu Rokutanda", "value": 9}, {"from": "Jin Koishikawa", "title": "Interactions: 8", "to": "Yuu Matsuura", "value": 8}, {"from": "Rumi Matsuura", "title": "Interactions: 8", "to": "Yuu Matsuura", "value": 8}, {"from": "Youji Matsuura", "title": "Interactions: 8", "to": "Yuu Matsuura", "value": 8}, {"from": "Miki Koishikawa", "title": "Interactions: 8", "to": "Namura", "value": 8}, {"from": "Takuji Kijima", "title": "Interactions: 8", "to": "Yuu Matsuura", "value": 8}, {"from": "Namura", "title": "Interactions: 7", "to": "Ryoko Momoi", "value": 7}, {"from": "Miki Koishikawa", "title": "Interactions: 6", "to": "Miki\u0027s friend", "value": 6}, {"from": "Arimi Suzuki", "title": "Interactions: 6", "to": "Tsutomu Rokutanda", "value": 6}, {"from": "Ginta Suou", "title": "Interactions: 5", "to": "Namura", "value": 5}, {"from": "Namura", "title": "Interactions: 4", "to": "Yuu Matsuura", "value": 4}, {"from": "Meiko Akizuki", "title": "Interactions: 3", "to": "Takuji Kijima", "value": 3}, {"from": "Meiko Akizuki", "title": "Interactions: 3", "to": "Satoshi Miwa", "value": 3}, {"from": "Takuji Kijima", "title": "Interactions: 3", "to": "Tsutomu Rokutanda", "value": 3}, {"from": "Arimi Suzuki", "title": "Interactions: 2", "to": "Takuji Kijima", "value": 2}, {"from": "Ginta Suou", "title": "Interactions: 2", "to": "Takuji Kijima", "value": 2}, {"from": "Namura", "title": "Interactions: 2", "to": "Takuji Kijima", "value": 2}, {"from": "Ryoko Momoi", "title": "Interactions: 2", "to": "Takuji Kijima", "value": 2}, {"from": "Satoshi Miwa", "title": "Interactions: 1", "to": "Yuu Matsuura", "value": 1}, {"from": "Meiko Akizuki", "title": "Interactions: 1", "to": "Miki\u0027s friend", "value": 1}, {"from": "Arimi Suzuki", "title": "Interactions: 1", "to": "Namura", "value": 1}, {"from": "Arimi Suzuki", "title": "Interactions: 1", "to": "Ryoko Momoi", "value": 1}, {"from": "Ginta Suou", "title": "Interactions: 1", "to": "Ryoko Momoi", "value": 1}, {"from": "Miki Koishikawa", "title": "Interactions: 1", "to": "Ryoko Momoi", "value": 1}, {"from": "Namura", "title": "Interactions: 1", "to": "Tsutomu Rokutanda", "value": 1}, {"from": "Ryoko Momoi", "title": "Interactions: 1", "to": "Tsutomu Rokutanda", "value": 1}, {"from": "Ryoko Momoi", "title": "Interactions: 1", "to": "Yuu Matsuura", "value": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.01,
+            "damping": 0.4,
+            "gravitationalConstant": -50,
+            "springConstant": 0.08,
+            "springLength": 100
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
