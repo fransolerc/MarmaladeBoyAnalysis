@@ -14,15 +14,20 @@ class Visualizer:
 
     @staticmethod
     def plot_character_dialogues(df, top_n=20):
-        # (No changes to this method)
         sns.set(style="whitegrid")
         plt.figure(figsize=(14, 10))
+
+        # Ensure we are working with the top N characters
         top_characters = df.nlargest(top_n, 'count')
-        colors = sns.color_palette(Visualizer.PALETTE, n_colors=len(top_characters))
-        bars = plt.barh(top_characters['character'], top_characters['count'], color=colors, edgecolor='black')
+
+        # Create bar plot
+        bars = plt.barh(top_characters['character'], top_characters['count'], color=sns.color_palette(Visualizer.PALETTE, n_colors=len(top_characters)), edgecolor='black')
+
+        # Add value labels
         for bar in bars:
             plt.text(bar.get_width() + 5, bar.get_y() + bar.get_height() / 2, f'{int(bar.get_width())}',
                      va='center', ha='left', fontsize=10, color='black')
+
         plt.xlabel('Number of Dialogues', fontsize=12)
         plt.ylabel('Character', fontsize=12)
         plt.title(f'Top {top_n} Characters by Dialogue Count', fontsize=14)
@@ -32,30 +37,39 @@ class Visualizer:
 
     @staticmethod
     def plot_scenes_lines(df_scenes_lines, top_n=12):
-        # (No changes to this method)
         sns.set(style="whitegrid")
-        _, axes = plt.subplots(1, 2, figsize=(18, 10))
+        fig, axes = plt.subplots(1, 2, figsize=(18, 10))
+
+        # Plot Scene Count
         scenes = df_scenes_lines['# of Scenes'].nlargest(top_n)
         sns.barplot(x=scenes.values, y=scenes.index, ax=axes[0], palette=Visualizer.PALETTE)
         axes[0].set_title(f'Top {top_n} Characters by Scene Count', fontsize=14)
         axes[0].set_xlabel('Number of Scenes', fontsize=12)
         axes[0].set_ylabel('Character', fontsize=12)
+
+        # Plot Lines Spoken
         lines_spoken = df_scenes_lines['# of lines spoken'].nlargest(top_n)
         sns.barplot(x=lines_spoken.values, y=lines_spoken.index, ax=axes[1], palette=Visualizer.PALETTE)
         axes[1].set_title(f'Top {top_n} Characters by Lines Spoken', fontsize=14)
         axes[1].set_xlabel('Number of Lines Spoken', fontsize=12)
         axes[1].set_ylabel('')
+
         plt.tight_layout()
         plt.show()
 
     @staticmethod
     def plot_sentiment_distribution(df, top_n=15):
-        # (No changes to this method)
+        # Filter for top characters
         top_characters = df['character'].value_counts().nlargest(top_n).index
         df_top = df[df['character'].isin(top_characters)]
+
+        # Calculate sentiment proportions
         sentiment_counts = pd.crosstab(df_top['character'], df_top['sentiment'])
         sentiment_dist = sentiment_counts.div(sentiment_counts.sum(axis=1), axis=0)
-        sentiment_dist.plot(kind='barh', stacked=True, color=Visualizer.SENTIMENT_COLORS, figsize=(14, 10), edgecolor='black')
+
+        # Plot
+        sentiment_dist.plot(kind='barh', stacked=True, color=[Visualizer.SENTIMENT_COLORS.get(x, 'blue') for x in sentiment_dist.columns], figsize=(14, 10), edgecolor='black')
+
         plt.title(f'Sentiment Distribution for Top {top_n} Characters', fontsize=14)
         plt.xlabel('Proportion of Dialogues', fontsize=12)
         plt.ylabel('Character', fontsize=12)
@@ -64,22 +78,21 @@ class Visualizer:
         plt.show()
 
     @staticmethod
-    def plot_interactive_interactions(df, interaction_dict, top_n_chars=15):
+    def plot_interactive_interactions(df, interaction_dict):
         """
         Plots an interactive network graph of character interactions.
 
         Args:
             df (pd.DataFrame): The main DataFrame with all data.
             interaction_dict (dict): Dictionary with co-occurrence counts.
-            top_n_chars (int): Number of top characters to include in the graph.
         """
         # Get total dialogue counts for node sizing
         dialogue_counts = df['character'].value_counts()
-        top_characters = dialogue_counts.nlargest(top_n_chars).index
+        top_characters = dialogue_counts.nlargest(15).index.tolist()
 
         # Create a Pyvis network
-        net = Network(height="800px", width="100%", bgcolor="#222222", font_color="white", notebook=True)
-        net.force_atlas_2based()
+        net = Network(height="800px", width="100%", bgcolor="#222222", font_color="white", notebook=False)
+        # net.force_atlas_2based() # Optional layout algorithm
 
         # Add nodes (characters)
         for char in top_characters:
@@ -102,3 +115,24 @@ class Visualizer:
         # Open the file in the default web browser
         webbrowser.open(f"file://{os.path.realpath(filepath)}")
         print(f"Interactive network graph saved to {filepath}")
+
+    @staticmethod
+    def plot_sentiment_evolution(df_evolution):
+        """
+        Plots the evolution of sentiment over episodes.
+
+        Args:
+            df_evolution (pd.DataFrame): DataFrame with 'episode' and 'sentiment_score'.
+        """
+        sns.set(style="whitegrid")
+        plt.figure(figsize=(14, 6))
+
+        sns.lineplot(data=df_evolution, x='episode', y='sentiment_score', marker='o', color='purple')
+
+        plt.title('Sentiment Evolution Over Episodes', fontsize=16)
+        plt.xlabel('Episode', fontsize=12)
+        plt.ylabel('Average Sentiment Score (POS=1, NEU=0, NEG=-1)', fontsize=12)
+        plt.axhline(0, color='gray', linestyle='--', linewidth=1) # Zero line for neutrality
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+        plt.show()
