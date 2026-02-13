@@ -84,6 +84,51 @@ def display_menu():
     except (EOFError, KeyboardInterrupt):
         return '0'
 
+def get_sentiment_data(df, text_processor, df_with_sentiment):
+    """Helper to ensure sentiment data is available."""
+    if df_with_sentiment is None:
+        print("Processing text for sentiment first...")
+        return text_processor.process_text(df.copy())
+    return df_with_sentiment
+
+def handle_menu_choice(choice, df, text_processor, df_with_sentiment):
+    """Handles the user's menu choice and executes the corresponding analysis."""
+
+    if choice == '1':
+        run_dialogue_count(df)
+    elif choice == '2':
+        run_scene_line_count(df)
+    elif choice == '3':
+        run_interaction_graph(df)
+    elif choice == '4':
+        if df_with_sentiment is None:
+            df_with_sentiment = run_sentiment_analysis(df, text_processor)
+        else:
+            Visualizer.plot_sentiment_distribution(df_with_sentiment)
+    elif choice == '5':
+        df_with_sentiment = get_sentiment_data(df, text_processor, df_with_sentiment)
+        run_sentiment_evolution(df_with_sentiment, text_processor)
+    elif choice == '6':
+        print("\n--- Running All Analyses ---")
+        run_dialogue_count(df)
+        run_scene_line_count(df)
+        run_interaction_graph(df)
+
+        if df_with_sentiment is None:
+            df_with_sentiment = run_sentiment_analysis(df, text_processor)
+        else:
+            Visualizer.plot_sentiment_distribution(df_with_sentiment)
+
+        run_sentiment_evolution(df_with_sentiment, text_processor)
+        print("\nAll analyses complete.")
+    elif choice == '0':
+        print("Exiting program.")
+        return df_with_sentiment, False # Signal to exit loop
+    else:
+        print("Invalid choice. Please enter a number between 0 and 6.")
+
+    return df_with_sentiment, True # Signal to continue loop
+
 def main():
     try:
         print("Loading data...")
@@ -98,46 +143,11 @@ def main():
 
         # Keep a version of df with sentiment if calculated to avoid re-processing
         df_with_sentiment = None
+        running = True
 
-        while True:
+        while running:
             choice = display_menu()
-
-            if choice == '1':
-                run_dialogue_count(df)
-            elif choice == '2':
-                run_scene_line_count(df)
-            elif choice == '3':
-                run_interaction_graph(df)
-            elif choice == '4':
-                # Update df_with_sentiment if not already done
-                if df_with_sentiment is None:
-                    df_with_sentiment = run_sentiment_analysis(df, text_processor)
-                else:
-                    Visualizer.plot_sentiment_distribution(df_with_sentiment)
-            elif choice == '5':
-                if df_with_sentiment is None:
-                     # We need to process it first and store it
-                     print("Processing text for sentiment first...")
-                     df_with_sentiment = text_processor.process_text(df.copy())
-                run_sentiment_evolution(df_with_sentiment, text_processor)
-            elif choice == '6':
-                print("\n--- Running All Analyses ---")
-                run_dialogue_count(df)
-                run_scene_line_count(df)
-                run_interaction_graph(df)
-
-                if df_with_sentiment is None:
-                    df_with_sentiment = run_sentiment_analysis(df, text_processor)
-                else:
-                    Visualizer.plot_sentiment_distribution(df_with_sentiment)
-
-                run_sentiment_evolution(df_with_sentiment, text_processor)
-                print("\nAll analyses complete.")
-            elif choice == '0':
-                print("Exiting program.")
-                break
-            else:
-                print("Invalid choice. Please enter a number between 0 and 6.")
+            df_with_sentiment, running = handle_menu_choice(choice, df, text_processor, df_with_sentiment)
 
     except Exception as e:
         print(f"\nA critical error occurred: {e}")

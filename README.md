@@ -6,6 +6,8 @@ This repository contains a detailed analysis of the relationships between charac
 - **Dialogue Count by Character**: Analyzes the number of dialogues per character.
 - **Scene Breakdown**: Analyzes the number of scenes and spoken lines per character.
 - **Character Interaction Graph**: Visualizes interactions between characters using network graphs.
+- **Sentiment Analysis**: Tracks the emotional tone of dialogues and its evolution over episodes.
+- **Interactive Dashboard**: A web-based dashboard built with Streamlit to explore all analyses interactively.
 
 ## Installation
 
@@ -57,15 +59,23 @@ This repository contains a detailed analysis of the relationships between charac
 
 ## Usage
 
+### Option 1: Interactive Web Dashboard (Recommended)
+The easiest way to explore the data is using the Streamlit dashboard.
+```bash
+streamlit run app.py
+```
+This will automatically open the dashboard in your web browser.
+
+### Option 2: Command Line Interface
+You can also run the analysis scripts directly from the terminal.
 1.  **Prepare the data file**
     Ensure your dialogue file is located at `data/script.csv`. It must have the following columns, without a header: `index`, `episode`, `scene`, `character`, `dialogue`.
 
-2.  **Run the analysis**
-    To run the main script, simply execute:
+2.  **Run the script**
     ```bash
     python main.py
     ```
-    The program will process the data and display several windows with the generated charts.
+    Follow the on-screen menu to select the analysis you want to perform.
 
 ## Project Structure
 ```
@@ -78,7 +88,8 @@ marmalade-boy-analysis/
 │   ├── text_processing.py
 │   └── visualizations.py
 │
-├── main.py
+├── app.py              # Streamlit dashboard
+├── main.py             # CLI entry point
 ├── requirements.txt
 └── README.md
 ```
@@ -89,6 +100,8 @@ marmalade-boy-analysis/
 - Matplotlib & Seaborn
 - NLTK
 - NetworkX
+- Streamlit
+- Pyvis
 
 ## Contributions
 Contributions are welcome. Please open an *issue* or a *pull request* to discuss any changes.

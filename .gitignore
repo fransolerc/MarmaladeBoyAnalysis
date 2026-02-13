@@ -7,3 +7,6 @@ __pycache__/
 
 # Ignora la carpeta de subtítulos originales
 data/subtitles/
+
+# Ignora archivos generados dinámicamente
+interactive_network.html
