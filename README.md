@@ -30,6 +30,12 @@ This repository contains a detailed analysis of the relationships between charac
         python -m venv env
         .\env\Scripts\activate
         ```
+        > **Note:** If you encounter a security error like `running scripts is disabled on this system` in PowerShell, you can try running this command before activating the environment:
+        > ```powershell
+        > Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+        > ```
+        > Alternatively, you can use Command Prompt (`cmd`) instead of PowerShell.
+
     *   **On macOS / Linux:**
         ```bash
         python3 -m venv env
