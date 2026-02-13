@@ -138,4 +138,4 @@ elif analysis_type == OPTION_INTERACTION_GRAPH:
 
 # Footer
 st.sidebar.markdown("---")
-st.sidebar.info("Created by Fran Soler")
+st.sidebar.info("Created by Francisco José Soler Conchello")
